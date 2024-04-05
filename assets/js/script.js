@@ -20,10 +20,10 @@ const createTaskCard = (task) => {
     .attr("data-task-id", task.id)
     const cardHeader = $("<div>").addClass("card-header h4").text(task.title);
     const cardBody = $("<div>").addClass("card-body");
-    const cardDiscription = $("<p>").addClass("card-text").text(task.description);
+    const cardDescription = $("<p>").addClass("card-text").text(task.description);
     const cardDueDate = $("<p>").addClass("card-text").text(task.dueDate);
     const cardDeleteButton = $("<button>").addClass("btn btn-danger delete")
-        .text("Delete").attr("data-task-id", task.id);
+        .text("Delete")
     cardDeleteButton.on("click", handleDeleteTask);
 
     if(task.dueDate && task.status !== 'done') {
@@ -40,7 +40,7 @@ const createTaskCard = (task) => {
 
     cardBody.append(cardDescription, cardDueDate, cardDeleteButton);
     taskCard.append(cardHeader, cardBody);
-
+    
     return taskCard;
 }
 
@@ -60,7 +60,7 @@ const renderTaskList = () => {
     doneList.empty();
 
     for(let index =0; index < taskList.length; index++) {
-        if(taskList[index].status === "to-do") {
+                if(taskList[index].status === "to-do") {
             todoList.append(createTaskCard(taskList[index]));
         } else if(taskList[index].status === "in-progress") {
             inProgressList.append(createTaskCard(taskList[index]));
@@ -75,20 +75,7 @@ const renderTaskList = () => {
         opacity: 0.7,
         zIndex: 100,
 
-        helper: function(event) {
-             let original;
-            if ($(evenet.target).hasClass("ui-draggable")) {
-                original = $(event.target);
-            } else {
-                original = $(event.target).closest(".ui-draggable");
-
-            }
-
-            return original.clone().css({
-                maxWidth: original.outerWidth(),
-            });
-        }
-    })
+            })
 }
 
 // Todo: create a function to handle adding a new task
@@ -114,8 +101,8 @@ const handleAddTask = (event) => {
 // Todo: create a function to handle deleting a task
 function handleDeleteTask(event) {
     event.preventDefault();
-    let taskId = $(this).attr("data-task-id");
-    console.log(teskId)
+    let taskId = $(this).closest(".task-card").attr("data-task-id");
+    
     console.log(taskList)
     taskList = taskList.filter(task => task.id !== parseInt(taskId));
     localStorage.setItem("tasks", JSON.stringify(taskList));
@@ -124,7 +111,7 @@ function handleDeleteTask(event) {
 
 // Todo: create a function to handle dropping a task into a new status lane
 const handleDrop = (event, ui) => {
-    const taskID = ui.draggable[0].dataset.taskId;
+    const taskId = ui.draggable[0].dataset.taskId;
     const newStatus = event.target.id
 
     for(let index = 0; index < taskList.length; index++) {
